@@ -289,219 +289,6 @@
 
 
 
-            <!-- Dashboard Charts -->
-
-            <div class="dashboard-chart-grid">
-
-
-                <div class="panel chart-panel">
-
-                    <div class="panel-heading">
-
-                        <div>
-
-                            <h3>
-                                Income vs Expense
-                            </h3>
-
-                            <p>
-                                Financial performance
-                            </p>
-
-                        </div>
-
-
-                        <select
-                            id="dashboardPeriod"
-                            class="small-select"
-                        >
-
-                            <option value="all">
-                                All Time
-                            </option>
-
-                            <option value="6">
-                                Last 6 Months
-                            </option>
-
-                            <option value="12">
-                                Last 12 Months
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="chart-container">
-
-                        <canvas
-                            id="incomeExpenseChart">
-                        </canvas>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="panel chart-panel">
-
-                    <div class="panel-heading">
-
-                        <div>
-
-                            <h3>
-                                Expense Categories
-                            </h3>
-
-                            <p>
-                                Where my money goes
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="chart-container doughnut-container">
-
-                        <canvas
-                            id="expenseCategoryChart">
-                        </canvas>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- Dashboard Bottom -->
-
-            <div class="dashboard-grid">
-
-
-                <div class="panel">
-
-                    <div class="panel-heading">
-
-                        <div>
-
-                            <h3>
-                                Recent Transactions
-                            </h3>
-
-                            <p>
-                                Latest financial activity
-                            </p>
-
-                        </div>
-
-
-                        <button
-                            class="text-btn"
-                            onclick="showSection('transactions')"
-                        >
-                            View All
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="recentTransactions"
-                        class="table-wrap"
-                    ></div>
-
-                </div>
-
-
-
-                <div class="panel">
-
-                    <div class="panel-heading">
-
-                        <div>
-
-                            <h3>
-                                Financial Summary
-                            </h3>
-
-                            <p>
-                                Quick overview
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-list">
-
-
-                        <div class="summary-item">
-
-                            <span>
-                                Loan Given
-                            </span>
-
-                            <strong id="summaryGiven">
-                                ₨ 0
-                            </strong>
-
-                        </div>
-
-
-
-                        <div class="summary-item">
-
-                            <span>
-                                Loan Received
-                            </span>
-
-                            <strong id="summaryReceived">
-                                ₨ 0
-                            </strong>
-
-                        </div>
-
-
-
-                        <div class="summary-item">
-
-                            <span>
-                                Committee Remaining
-                            </span>
-
-                            <strong id="summaryCommittee">
-                                ₨ 0
-                            </strong>
-
-                        </div>
-
-
-
-                        <div class="summary-item">
-
-                            <span>
-                                Credit Used
-                            </span>
-
-                            <strong id="summaryCredit">
-                                ₨ 0
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-            </div>
-
         </section>
 
 
@@ -543,6 +330,45 @@
                 </button>
 
             </div>
+
+
+
+            <!-- Recent Transactions moved from Dashboard -->
+                <div class="panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Recent Transactions
+                            </h3>
+
+                            <p>
+                                Latest financial activity
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-btn"
+                            onclick="showSection('transactions')"
+                        >
+                            View All
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="recentTransactions"
+                        class="table-wrap"
+                    ></div>
+
+                </div>
+
+
 
 
 
@@ -782,6 +608,179 @@
             </div>
 
 
+
+            <!-- Moved from Dashboard -->
+
+            <!-- Performance Charts -->
+
+            <div class="dashboard-chart-grid">
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Income vs Expense
+                            </h3>
+
+                            <p>
+                                Financial performance
+                            </p>
+
+                        </div>
+
+
+                        <select
+                            id="dashboardPeriod"
+                            class="small-select"
+                        >
+
+                            <option value="all">
+                                All Time
+                            </option>
+
+                            <option value="6">
+                                Last 6 Months
+                            </option>
+
+                            <option value="12">
+                                Last 12 Months
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="incomeExpenseChart">
+                        </canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Expense Categories
+                            </h3>
+
+                            <p>
+                                Where my money goes
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container doughnut-container">
+
+                        <canvas
+                            id="expenseCategoryChart">
+                        </canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <div class="panel" style="margin-top:16px;">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Financial Summary
+                            </h3>
+
+                            <p>
+                                Quick overview
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-list">
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Loan Given
+                            </span>
+
+                            <strong id="summaryGiven">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Loan Received
+                            </span>
+
+                            <strong id="summaryReceived">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Committee Remaining
+                            </span>
+
+                            <strong id="summaryCommittee">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Credit Used
+                            </span>
+
+                            <strong id="summaryCredit">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+            </div>
 
             <!-- Reports Charts -->
 
