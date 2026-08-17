@@ -368,6 +368,21 @@ const pageInfo = {
 };
 
 
+function toggleMobileMore(force) {
+    const sheet = document.getElementById("mobileMoreSheet");
+    const backdrop = document.getElementById("mobileMoreBackdrop");
+    if (!sheet || !backdrop) return;
+
+    const shouldShow = typeof force === "boolean"
+        ? force
+        : !sheet.classList.contains("show");
+
+    sheet.classList.toggle("show", shouldShow);
+    backdrop.classList.toggle("show", shouldShow);
+}
+
+window.toggleMobileMore = toggleMobileMore;
+
 function showSection(sectionId) {
 
     document
