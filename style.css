@@ -63,32 +63,11 @@ body::after{
     filter:blur(10px);
 }
 
-/* A large, subtle Rs. 5000-inspired banknote illustration.
-   It is deliberately stylized rather than an exact reproduction. */
+/* APP */
 .app{
     min-height:100vh;
     display:flex;
     position:relative;
-}
-.app::after{
-    content:"5000";
-    position:fixed;
-    right:-45px;
-    top:42%;
-    width:420px;
-    height:180px;
-    display:grid;
-    place-items:center;
-    font-family:Georgia,serif;
-    font-size:112px;
-    font-weight:900;
-    letter-spacing:.08em;
-    color:rgba(212,175,55,.025);
-    border:2px solid rgba(212,175,55,.028);
-    border-radius:30px;
-    transform:rotate(-13deg);
-    pointer-events:none;
-    z-index:-1;
 }
 
 /* SIDEBAR */
@@ -220,18 +199,22 @@ body::after{
     box-shadow:0 25px 70px rgba(0,0,0,.35);
 }
 .welcome-card::before{
-    content:"5000";
+    content:"";
     position:absolute;
-    right:25px;
-    bottom:-48px;
-    font-family:Georgia,serif;
-    font-size:155px;
-    line-height:1;
-    font-weight:900;
-    letter-spacing:.04em;
-    color:rgba(212,175,55,.055);
-    transform:rotate(-8deg);
+    right:-30px;
+    bottom:-28px;
+    width:510px;
+    height:205px;
+    background-image:url("https://banknotenews.com/wp-content/uploads/2023/06/Pakistan_SBP_5000_rupees_2022.00.00_B239r_P51_EK_8006777_f.jpg");
+    background-size:cover;
+    background-position:center;
+    border-radius:22px;
+    opacity:.18;
+    filter:saturate(.85) contrast(.95);
+    transform:rotate(-6deg);
+    box-shadow:0 25px 50px rgba(0,0,0,.25);
     pointer-events:none;
+    z-index:0;
 }
 .welcome-card::after{
     content:"";
@@ -283,23 +266,70 @@ body::after{
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-/* QUICK ACCESS */
+/* QUICK ACCESS — premium 3D cards */
 .quick-access-panel{
-    margin:18px 0; padding:18px; border-radius:20px;
-    background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
-    border:1px solid rgba(212,175,55,.12); box-shadow:var(--shadow); backdrop-filter:blur(18px);
+    margin:18px 0;
+    padding:19px;
+    border-radius:21px;
+    background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    border:1px solid rgba(255,255,255,.065);
+    box-shadow:0 20px 50px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.045);
+    backdrop-filter:blur(18px);
 }
-.quick-access-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:13px}
-.quick-access-head span{font-size:9px;letter-spacing:.16em;font-weight:900;color:#d4af37}
-.quick-access-head h3{margin:4px 0 0;font-size:15px;color:#fff}
+.quick-access-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin-bottom:14px}
+.quick-access-head span{font-size:9px;letter-spacing:.18em;font-weight:900;color:#d4af37}
+.quick-access-head h3{margin:5px 0 0;font-size:16px;color:#fff;letter-spacing:-.02em}
 .quick-access-head small{color:#707b8c;font-size:10px}
-.quick-access-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
-.quick-access-grid button{border:1px solid rgba(255,255,255,.065);background:rgba(255,255,255,.028);color:#fff;border-radius:14px;padding:13px 10px;text-align:left;transition:.18s ease}
-.quick-access-grid button:hover{transform:translateY(-2px);border-color:rgba(212,175,55,.24);background:rgba(212,175,55,.055)}
-.quick-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(212,175,55,.09);color:#d4af37;font-weight:900;margin-bottom:9px}
-.quick-access-grid strong{display:block;font-size:11px}
-.quick-access-grid small{display:block;color:#7f8998;font-size:8px;margin-top:3px;white-space:nowrap}
-
+.quick-access-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}
+.quick-access-grid button{
+    min-height:116px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.075);
+    background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018));
+    color:#fff;
+    border-radius:16px;
+    padding:14px 12px;
+    text-align:left;
+    box-shadow:
+        0 12px 0 rgba(0,0,0,.20),
+        0 18px 28px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.075);
+    transform:translateY(0);
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;
+}
+.quick-access-grid button::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:0;height:2px;
+    background:#a51f38;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .2s ease;
+}
+.quick-access-grid button:hover{
+    transform:translateY(-5px);
+    border-color:#b3263e;
+    background:linear-gradient(145deg,rgba(181,38,62,.13),rgba(255,255,255,.025));
+    box-shadow:
+        0 12px 0 rgba(0,0,0,.16),
+        0 25px 40px rgba(0,0,0,.34),
+        0 0 0 1px rgba(179,38,62,.16),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+.quick-access-grid button:hover::after{transform:scaleX(1)}
+.quick-access-grid button:active{transform:translateY(0);box-shadow:0 5px 0 rgba(0,0,0,.22),0 10px 18px rgba(0,0,0,.25)}
+.quick-icon{
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(145deg,rgba(212,175,55,.16),rgba(212,175,55,.035));
+    color:#d9ba50;font-weight:900;margin-bottom:12px;
+    border:1px solid rgba(212,175,55,.14);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+    font-size:17px;
+}
+.quick-access-grid button:hover .quick-icon{color:#efb5bd;border-color:rgba(179,38,62,.35);background:rgba(179,38,62,.10)}
+.quick-access-grid strong{display:block;font-size:11px;letter-spacing:.01em}
+.quick-access-grid small{display:block;color:#7f8998;font-size:8px;margin-top:4px;white-space:nowrap}
 /* CARDS */
 .stats-grid{
     display:grid;
@@ -521,7 +551,7 @@ td strong{color:#f3f5f7}
     .welcome-card::before{font-size:115px;right:-12px;bottom:-25px}
     .welcome-icon{width:52px;height:52px;border-radius:16px;font-size:22px}
     .quick-access-grid{grid-template-columns:repeat(3,1fr)}
-    .quick-access-grid button{padding:11px 8px}
+    .quick-access-grid button{padding:12px 9px;min-height:108px}
     .quick-access-grid small{display:none}
     .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
     .stat-card{padding:15px;border-radius:15px}
@@ -605,6 +635,7 @@ td strong{color:#f3f5f7}
 @media(max-width:420px){
     .main{padding-left:11px;padding-right:11px}
     .quick-access-grid{grid-template-columns:repeat(2,1fr)}
+    .quick-access-grid button{min-height:102px}
     .stats-grid,.loan-card,.committee-grid,.credit-grid,.reports-grid{grid-template-columns:1fr}
     .welcome-card{min-height:190px}.welcome-card h2{font-size:23px}
     .date-box{display:none}
