@@ -21,7 +21,9 @@ const defaultData = {
 
     committees: [],
 
-    creditCards: []
+    creditCards: [],
+
+    cashWithdrawals: []
 
 };
 
@@ -63,6 +65,11 @@ function loadData() {
             creditCards:
                 Array.isArray(parsed.creditCards)
                     ? parsed.creditCards
+                    : [],
+
+            cashWithdrawals:
+                Array.isArray(parsed.cashWithdrawals)
+                    ? parsed.cashWithdrawals
                     : []
 
         };
@@ -3421,6 +3428,7 @@ function renderCreditCards() {
 
         `;
 
+        renderCashWithdrawals();
         return;
 
     }
@@ -3579,6 +3587,16 @@ function renderCreditCards() {
 
                         </div>
 
+                        <div style="position:relative;z-index:3;margin-top:14px;">
+                            <button
+                                type="button"
+                                class="primary-btn"
+                                onclick="openCashWithdrawalModal('${card.id}')"
+                            >
+                                💵 Cash Withdrawal — 2% Charge
+                            </button>
+                        </div>
+
                     </div>
 
                 `;
@@ -3586,6 +3604,255 @@ function renderCreditCards() {
             })
             .join("");
 
+    renderCashWithdrawals();
+
+}
+
+
+/* =========================================================
+   CREDIT CARD CASH WITHDRAWAL — 2% CHARGE
+========================================================= */
+
+function ensureWithdrawalModal() {
+
+    if ($("cashWithdrawalModal")) return;
+
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.id = "cashWithdrawalModal";
+
+    modal.innerHTML = `
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <h2>Cash Withdrawal</h2>
+                    <p>Withdraw cash from your credit card. A 2% charge applies.</p>
+                </div>
+                <button type="button" class="close-btn" onclick="closeModal('cashWithdrawalModal')">×</button>
+            </div>
+            <form id="cashWithdrawalForm">
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Credit Card</label>
+                        <select id="withdrawalCard" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cash Amount</label>
+                        <input type="number" id="withdrawalAmount" min="1" step="0.01" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>2% Withdrawal Charge</label>
+                        <input type="text" id="withdrawalCharge" value="₨ 0" readonly>
+                    </div>
+                    <div class="form-group full">
+                        <label>Total Added to Card Used</label>
+                        <input type="text" id="withdrawalTotal" value="₨ 0" readonly>
+                    </div>
+                    <div class="form-group full">
+                        <label>Note</label>
+                        <input type="text" id="withdrawalNote" placeholder="e.g. Emergency cash">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="secondary-btn" onclick="closeModal('cashWithdrawalModal')">Cancel</button>
+                    <button type="submit" class="primary-btn">Withdraw Cash</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.addEventListener("click", event => {
+        if (event.target === modal) closeModal("cashWithdrawalModal");
+    });
+
+    $("cashWithdrawalForm")?.addEventListener("submit", processCashWithdrawal);
+    $("withdrawalAmount")?.addEventListener("input", updateWithdrawalPreview);
+    $("withdrawalCard")?.addEventListener("change", updateWithdrawalPreview);
+}
+
+function populateWithdrawalCards() {
+    const select = $("withdrawalCard");
+    if (!select) return;
+
+    if (!data.creditCards.length) {
+        select.innerHTML = `<option value="">No credit card available</option>`;
+        return;
+    }
+
+    const current = select.value;
+    select.innerHTML = data.creditCards.map(card => {
+        const available = Math.max(numberValue(card.limit) - numberValue(card.used), 0);
+        return `<option value="${escapeHTML(card.id)}">${escapeHTML(card.name)} — Available ${money(available)}</option>`;
+    }).join("");
+
+    if (data.creditCards.some(card => card.id === current)) select.value = current;
+}
+
+function getSelectedWithdrawalCard() {
+    const id = $("withdrawalCard")?.value;
+    return id ? data.creditCards.find(card => card.id === id) || null : null;
+}
+
+function updateWithdrawalPreview() {
+    const amount = numberValue($("withdrawalAmount")?.value);
+    const charge = amount * 0.02;
+    const total = amount + charge;
+    if ($("withdrawalCharge")) $("withdrawalCharge").value = money(charge);
+    if ($("withdrawalTotal")) $("withdrawalTotal").value = money(total);
+}
+
+function openCashWithdrawalModal(cardId = "") {
+    ensureWithdrawalModal();
+    populateWithdrawalCards();
+
+    if (!data.creditCards.length) {
+        showToast("Please add a credit card first.");
+        return;
+    }
+
+    if (cardId && $("withdrawalCard")) $("withdrawalCard").value = cardId;
+    if ($("withdrawalAmount")) $("withdrawalAmount").value = "";
+    if ($("withdrawalNote")) $("withdrawalNote").value = "";
+    updateWithdrawalPreview();
+    openModal("cashWithdrawalModal");
+}
+
+function processCashWithdrawal(event) {
+    event.preventDefault();
+
+    const card = getSelectedWithdrawalCard();
+    const amount = numberValue($("withdrawalAmount")?.value);
+    const note = ($( "withdrawalNote")?.value || "").trim();
+
+    if (!card) {
+        showToast("Please select a credit card.");
+        return;
+    }
+
+    if (amount <= 0) {
+        showToast("Please enter a valid withdrawal amount.");
+        return;
+    }
+
+    const limit = numberValue(card.limit);
+    const used = numberValue(card.used);
+    const available = Math.max(limit - used, 0);
+    const charge = amount * 0.02;
+    const total = amount + charge;
+
+    if (total > available) {
+        showToast(`Insufficient available credit. Required: ${money(total)}.`);
+        return;
+    }
+
+    const withdrawalId = uniqueId("withdrawal");
+
+    card.used = used + total;
+
+    data.cashWithdrawals.push({
+        id: withdrawalId,
+        cardId: card.id,
+        cardName: card.name,
+        amount,
+        charge,
+        total,
+        note: note || "Cash withdrawal",
+        date: today(),
+        createdAt: new Date().toISOString()
+    });
+
+    /* Only the 2% fee is an expense. The withdrawn cash itself is borrowed money. */
+    data.transactions.push({
+        id: uniqueId("txn"),
+        type: "expense",
+        category: "Other Expense",
+        title: `Credit Card Cash Withdrawal Charge — ${card.name}`,
+        amount: charge,
+        date: today(),
+        createdAt: new Date().toISOString(),
+        source: "credit-withdrawal",
+        withdrawalId
+    });
+
+    saveData();
+    closeModal("cashWithdrawalModal");
+    updateAll();
+
+    showToast(`${money(amount)} withdrawn. 2% charge: ${money(charge)}.`);
+}
+
+function deleteCashWithdrawal(id) {
+    const withdrawal = data.cashWithdrawals.find(item => item.id === id);
+    if (!withdrawal) return;
+
+    if (!confirm("Delete this cash withdrawal and reverse its credit usage?")) return;
+
+    const card = data.creditCards.find(item => item.id === withdrawal.cardId);
+    if (card) {
+        card.used = Math.max(numberValue(card.used) - numberValue(withdrawal.total), 0);
+    }
+
+    data.transactions = data.transactions.filter(
+        transaction => transaction.withdrawalId !== withdrawal.id
+    );
+
+    data.cashWithdrawals = data.cashWithdrawals.filter(
+        item => item.id !== id
+    );
+
+    saveData();
+    updateAll();
+    showToast("Cash withdrawal deleted.");
+}
+
+window.openCashWithdrawalModal = openCashWithdrawalModal;
+window.deleteCashWithdrawal = deleteCashWithdrawal;
+
+function renderCashWithdrawals() {
+    const container = $("cashWithdrawalList");
+    if (!container) return;
+
+    if (!data.cashWithdrawals.length) {
+        container.innerHTML = `<div class="empty">No cash withdrawals yet.</div>`;
+        return;
+    }
+
+    const list = [...data.cashWithdrawals].sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    container.innerHTML = `
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Card</th>
+                        <th>Cash</th>
+                        <th>2% Charge</th>
+                        <th>Total Used</th>
+                        <th>Note</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${list.map(item => `
+                        <tr>
+                            <td>${formatDate(item.date)}</td>
+                            <td>${escapeHTML(item.cardName)}</td>
+                            <td class="amount-income">${money(item.amount)}</td>
+                            <td class="amount-expense">${money(item.charge)}</td>
+                            <td class="amount-expense">${money(item.total)}</td>
+                            <td>${escapeHTML(item.note)}</td>
+                            <td><button class="delete-btn" onclick="deleteCashWithdrawal('${item.id}')">Delete</button></td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
 
@@ -3605,6 +3872,24 @@ function deleteCreditCard(id) {
     data.creditCards =
         data.creditCards.filter(
             card => card.id !== id
+        );
+
+    const removedWithdrawalIds =
+        data.cashWithdrawals
+            .filter(item => item.cardId === id)
+            .map(item => item.id);
+
+    data.cashWithdrawals =
+        data.cashWithdrawals.filter(
+            item => item.cardId !== id
+        );
+
+    data.transactions =
+        data.transactions.filter(
+            transaction =>
+                !removedWithdrawalIds.includes(
+                    transaction.withdrawalId
+                )
         );
 
 
@@ -3682,6 +3967,10 @@ function updateAll() {
     renderCommittees();
 
     renderCreditCards();
+
+    ensureWithdrawalModal();
+    populateWithdrawalCards();
+    renderCashWithdrawals();
 
 }
 
