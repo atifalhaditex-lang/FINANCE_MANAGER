@@ -23,9 +23,7 @@ const defaultData = {
 
     creditCards: [],
 
-    cashWithdrawals: [],
-
-    installments: []
+    cashWithdrawals: []
 
 };
 
@@ -72,11 +70,6 @@ function loadData() {
             cashWithdrawals:
                 Array.isArray(parsed.cashWithdrawals)
                     ? parsed.cashWithdrawals
-                    : [],
-
-            installments:
-                Array.isArray(parsed.installments)
-                    ? parsed.installments
                     : []
 
         };
@@ -369,15 +362,6 @@ const pageInfo = {
 
         subtitle:
             "Manage credit limit and cash withdrawals."
-
-    },
-
-    installments: {
-
-        title: "Installments",
-
-        subtitle:
-            "Track purchases paid over multiple months."
 
     }
 
@@ -3924,269 +3908,6 @@ window.deleteCreditCard =
     deleteCreditCard;
 
 
-
-/* =========================================================
-   INSTALLMENTS
-========================================================= */
-
-function installmentTotal(item) {
-    const principal = numberValue(item.price);
-    const markup = numberValue(item.markupPercent);
-    return Math.max(principal - numberValue(item.downPayment), 0) * (1 + markup / 100) + numberValue(item.downPayment);
-}
-
-function installmentBalance(item) {
-    const total = installmentTotal(item);
-    return Math.max(total - numberValue(item.paidAmount), 0);
-}
-
-function installmentMonthly(item) {
-    return numberValue(item.monthlyAmount);
-}
-
-function installmentNextDue(item) {
-    if (item.status === "completed" || numberValue(item.paidInstallments) >= numberValue(item.installments)) return null;
-    const start = new Date(`${item.firstDueDate}T12:00:00`);
-    if (Number.isNaN(start.getTime())) return null;
-    const due = new Date(start);
-    due.setMonth(due.getMonth() + numberValue(item.paidInstallments));
-    return due;
-}
-
-function ensureInstallmentModal() {
-    if ($("installmentModal")) return;
-
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.id = "installmentModal";
-    modal.innerHTML = `
-        <div class="modal-box">
-            <div class="modal-header">
-                <div>
-                    <h2>Add Installment Plan</h2>
-                    <p>For AC, mobile, appliance, furniture or any other purchase paid over time.</p>
-                </div>
-                <button type="button" class="close-btn" onclick="closeModal('installmentModal')">×</button>
-            </div>
-            <form id="installmentForm">
-                <div class="form-grid">
-                    <div class="form-group full">
-                        <label>Purchase / Item Name</label>
-                        <input id="installmentName" type="text" placeholder="e.g. AC" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Total Purchase Price</label>
-                        <input id="installmentPrice" type="number" min="0" step="0.01" placeholder="180000" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Down Payment</label>
-                        <input id="installmentDown" type="number" min="0" step="0.01" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Markup / Interest %</label>
-                        <input id="installmentMarkup" type="number" min="0" step="0.01" value="0" placeholder="0 for 0%">
-                    </div>
-                    <div class="form-group">
-                        <label>Number of Months</label>
-                        <input id="installmentMonths" type="number" min="1" step="1" placeholder="12" required>
-                    </div>
-                    <div class="form-group">
-                        <label>First Due Date</label>
-                        <input id="installmentFirstDue" type="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Monthly Installment</label>
-                        <input id="installmentMonthly" type="number" min="0" step="0.01" placeholder="Auto calculated">
-                    </div>
-                    <div class="form-group full">
-                        <label>Note</label>
-                        <input id="installmentNote" type="text" placeholder="e.g. 5th of every month">
-                    </div>
-                </div>
-                <div id="installmentPreview" class="installment-preview"></div>
-                <div class="modal-actions">
-                    <button type="button" class="secondary-btn" onclick="closeModal('installmentModal')">Cancel</button>
-                    <button type="submit" class="primary-btn">Save Installment</button>
-                </div>
-            </form>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    modal.addEventListener("click", e => { if (e.target === modal) closeModal("installmentModal"); });
-    $("installmentForm")?.addEventListener("submit", saveInstallment);
-    ["installmentPrice","installmentDown","installmentMarkup","installmentMonths","installmentMonthly"].forEach(id => $(id)?.addEventListener("input", updateInstallmentPreview));
-}
-
-function updateInstallmentPreview() {
-    const price = numberValue($("installmentPrice")?.value);
-    const down = numberValue($("installmentDown")?.value);
-    const markup = numberValue($("installmentMarkup")?.value);
-    const months = Math.max(numberValue($("installmentMonths")?.value), 0);
-    const base = Math.max(price - down, 0);
-    const total = base * (1 + markup / 100) + down;
-    const autoMonthly = months > 0 ? (total - down) / months : 0;
-    const entered = numberValue($("installmentMonthly")?.value);
-    const monthly = entered > 0 ? entered : autoMonthly;
-    if ($("installmentPreview")) {
-        $("installmentPreview").innerHTML = `
-            <div><span>Total Payable</span><strong>${money(total)}</strong></div>
-            <div><span>Monthly Payment</span><strong>${money(monthly)}</strong></div>
-            <div><span>Markup</span><strong>${money(total - price)}</strong></div>
-        `;
-    }
-}
-
-function openInstallmentModal() {
-    ensureInstallmentModal();
-    $("installmentForm")?.reset();
-    const d = new Date();
-    d.setMonth(d.getMonth() + 1);
-    if ($("installmentFirstDue")) $("installmentFirstDue").value = d.toISOString().slice(0,10);
-    if ($("installmentDown")) $("installmentDown").value = "0";
-    if ($("installmentMarkup")) $("installmentMarkup").value = "0";
-    updateInstallmentPreview();
-    openModal("installmentModal");
-}
-
-function saveInstallment(event) {
-    event.preventDefault();
-    const name = ($( "installmentName")?.value || "").trim();
-    const price = numberValue($("installmentPrice")?.value);
-    const down = numberValue($("installmentDown")?.value);
-    const markup = numberValue($("installmentMarkup")?.value);
-    const months = Math.floor(numberValue($("installmentMonths")?.value));
-    const firstDue = $("installmentFirstDue")?.value;
-    const customMonthly = numberValue($("installmentMonthly")?.value);
-    const note = ($( "installmentNote")?.value || "").trim();
-
-    if (!name || price <= 0 || months <= 0 || !firstDue) {
-        showToast("Please complete the purchase, price, months and due date.");
-        return;
-    }
-    if (down > price) {
-        showToast("Down payment cannot be greater than the purchase price.");
-        return;
-    }
-    const total = installmentTotal({price, downPayment: down, markupPercent: markup});
-    const monthly = customMonthly > 0 ? customMonthly : (total - down) / months;
-    const id = uniqueId("installment");
-
-    data.installments.push({
-        id, name, price, downPayment: down, markupPercent: markup,
-        installments: months, monthlyAmount: monthly,
-        firstDueDate: firstDue, paidInstallments: 0,
-        paidAmount: down, note, status: "active",
-        createdAt: new Date().toISOString()
-    });
-
-    saveData();
-    closeModal("installmentModal");
-    updateAll();
-    showToast(`${name} installment plan added.`);
-}
-
-function markInstallmentPaid(id) {
-    const item = data.installments.find(x => x.id === id);
-    if (!item || item.status === "completed") return;
-
-    const remaining = installmentBalance(item);
-    const payment = Math.min(installmentMonthly(item), remaining);
-    if (payment <= 0) return;
-
-    item.paidInstallments = numberValue(item.paidInstallments) + 1;
-    item.paidAmount = numberValue(item.paidAmount) + payment;
-    if (item.paidInstallments >= numberValue(item.installments) || installmentBalance(item) <= 0.01) {
-        item.paidAmount = installmentTotal(item);
-        item.status = "completed";
-    }
-
-    data.transactions.push({
-        id: uniqueId("txn"), type: "expense", category: "Shopping",
-        title: `Installment Payment — ${item.name}`,
-        amount: payment, date: today(), createdAt: new Date().toISOString(),
-        source: "installment", installmentId: item.id
-    });
-
-    saveData();
-    updateAll();
-    showToast(`${money(payment)} installment paid.`);
-}
-
-function deleteInstallment(id) {
-    const item = data.installments.find(x => x.id === id);
-    if (!item) return;
-    if (!confirm(`Delete installment plan for ${item.name}? Related installment expense records will also be removed.`)) return;
-    data.installments = data.installments.filter(x => x.id !== id);
-    data.transactions = data.transactions.filter(x => x.installmentId !== id);
-    saveData();
-    updateAll();
-    showToast("Installment plan deleted.");
-}
-
-function renderInstallments() {
-    const container = $("installmentList");
-    if (!container) return;
-    const plans = [...(data.installments || [])].sort((a,b) => {
-        const da = installmentNextDue(a)?.getTime() || Infinity;
-        const db = installmentNextDue(b)?.getTime() || Infinity;
-        return da - db;
-    });
-
-    const active = plans.filter(x => x.status !== "completed");
-    const monthlyTotal = active.reduce((sum,x) => sum + installmentMonthly(x), 0);
-    const remainingTotal = active.reduce((sum,x) => sum + installmentBalance(x), 0);
-    const next = active.map(x => ({item:x, date:installmentNextDue(x)})).filter(x=>x.date).sort((a,b)=>a.date-b.date)[0];
-    if ($("installmentActiveCount")) $("installmentActiveCount").textContent = active.length;
-    if ($("installmentMonthlyTotal")) $("installmentMonthlyTotal").textContent = money(monthlyTotal);
-    if ($("installmentRemainingTotal")) $("installmentRemainingTotal").textContent = money(remainingTotal);
-    if ($("installmentNextDue")) $("installmentNextDue").textContent = next ? formatDate(next.date.toISOString().slice(0,10)) : "—";
-
-    if (!plans.length) {
-        container.innerHTML = `<div class="empty">No installment plans yet. Add your first purchase plan above.</div>`;
-        return;
-    }
-
-    container.innerHTML = `
-        <div class="installment-cards">
-        ${plans.map(item => {
-            const total = installmentTotal(item);
-            const balance = installmentBalance(item);
-            const paid = numberValue(item.paidInstallments);
-            const months = numberValue(item.installments);
-            const progress = months ? Math.min((paid / months) * 100, 100) : 0;
-            const nextDue = installmentNextDue(item);
-            const completed = item.status === "completed";
-            return `
-                <article class="installment-card ${completed ? "completed" : ""}">
-                    <div class="installment-card-top">
-                        <div>
-                            <span class="installment-kicker">${completed ? "COMPLETED" : "ACTIVE PLAN"}</span>
-                            <h3>${escapeHTML(item.name)}</h3>
-                            <p>${escapeHTML(item.note || `${months} monthly payments`)}</p>
-                        </div>
-                        <button class="delete-btn" onclick="deleteInstallment('${item.id}')">Delete</button>
-                    </div>
-                    <div class="installment-main-numbers">
-                        <div><span>Monthly</span><strong>${money(installmentMonthly(item))}</strong></div>
-                        <div><span>Remaining</span><strong>${money(balance)}</strong></div>
-                        <div><span>Next Due</span><strong>${nextDue ? formatDate(nextDue.toISOString().slice(0,10)) : "Paid off"}</strong></div>
-                    </div>
-                    <div class="installment-progress"><span style="width:${progress}%"></span></div>
-                    <div class="installment-meta"><span>${paid}/${months} payments paid</span><span>Total ${money(total)}</span></div>
-                    <div class="installment-card-actions">
-                        ${completed ? `<span class="installment-status">✓ Completed</span>` : `<button class="primary-btn" onclick="markInstallmentPaid('${item.id}')">Mark Next Payment Paid</button>`}
-                    </div>
-                </article>
-            `;
-        }).join("")}
-        </div>
-    `;
-}
-
-window.openInstallmentModal = openInstallmentModal;
-window.markInstallmentPaid = markInstallmentPaid;
-window.deleteInstallment = deleteInstallment;
-
 /* =========================================================
    CURRENT DATE
 ========================================================= */
@@ -4246,8 +3967,6 @@ function updateAll() {
     renderCommittees();
 
     renderCreditCards();
-
-    renderInstallments();
 
     ensureWithdrawalModal();
     populateWithdrawalCards();
