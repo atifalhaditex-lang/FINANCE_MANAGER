@@ -215,7 +215,7 @@ body::after{
     background:
         linear-gradient(90deg,rgba(39,21,8,.98) 0%,rgba(51,30,10,.88) 42%,rgba(54,31,10,.60) 100%),
         linear-gradient(135deg,rgba(226,185,79,.10),rgba(141,38,59,.08)),
-        url("https://www.sbp.org.pk/Notes/images/20/5000/12.JPG") center right / cover no-repeat;
+        url("5000-note.jpg") center right / cover no-repeat;
     border:1px solid rgba(226,185,79,.25);
     box-shadow:0 25px 70px rgba(0,0,0,.35);
 }
@@ -1062,4 +1062,36 @@ tr:hover td{background:rgba(143,38,58,.045)}
   }
   .welcome-card h2{font-size:25px}
   .quick-access-grid button:active{transform:translateY(-4px) scale(.995);border-color:rgba(192,68,85,.98);background:linear-gradient(145deg,rgba(99,48,27,.98),rgba(45,16,14,1));}
+}
+
+
+/* FINAL NOTE IMAGE + GOLD DREAM POLISH */
+.welcome-card{
+    background-position:center right;
+}
+.welcome-card::before{
+    background:linear-gradient(90deg,rgba(24,12,5,.88) 0%,rgba(34,18,7,.62) 46%,rgba(34,18,7,.20) 100%);
+    z-index:1;
+}
+.welcome-card > *{position:relative;z-index:2}
+.quick-access-grid button, .nav-btn, .stat-card, .panel, .chart-panel{
+    -webkit-tap-highlight-color:transparent;
+}
+.quick-access-grid button:active, .nav-btn:active, .mobile-nav-btn:active, .sheet-grid button:active{
+    transform:translateY(-1px) scale(.985);
+    border-color:rgba(180,61,77,.95)!important;
+    box-shadow:0 0 0 1px rgba(180,61,77,.30),0 10px 25px rgba(0,0,0,.30),inset 0 -2px 0 rgba(180,61,77,.75)!important;
+}
+@media(max-width:760px){
+    .welcome-card{
+        background-position:62% center;
+        background-size:auto 100%;
+        min-height:195px;
+    }
+    .welcome-card::before{
+        background:linear-gradient(90deg,rgba(24,12,5,.94) 0%,rgba(34,18,7,.76) 55%,rgba(34,18,7,.30) 100%);
+    }
+}
+@media(max-width:420px){
+    .welcome-card{background-position:66% center;background-size:auto 100%;}
 }
