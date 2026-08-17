@@ -316,7 +316,7 @@ const pageInfo = {
         title: "Dashboard",
 
         subtitle:
-            "Your complete financial overview"
+            "My complete financial overview"
 
     },
 
@@ -325,7 +325,7 @@ const pageInfo = {
         title: "Transactions",
 
         subtitle:
-            "Manage your income and expenses."
+            "Manage my income and expenses."
 
     },
 
@@ -334,7 +334,7 @@ const pageInfo = {
         title: "Reports & Analytics",
 
         subtitle:
-            "Understand where your money goes."
+            "Understand where my money goes."
 
     },
 
@@ -352,7 +352,7 @@ const pageInfo = {
         title: "Committee",
 
         subtitle:
-            "Track your monthly committee payments."
+            "Track my monthly committee payments."
 
     },
 
@@ -3641,7 +3641,7 @@ function ensureWithdrawalModal() {
             <div class="modal-header">
                 <div>
                     <h2>Cash Withdrawal</h2>
-                    <p>Withdraw cash from your credit card. A 2% charge applies.</p>
+                    <p>Credit card cash withdrawal. A 2% charge applies.</p>
                 </div>
                 <button type="button" class="close-btn" onclick="closeModal('cashWithdrawalModal')">×</button>
             </div>
