@@ -368,21 +368,6 @@ const pageInfo = {
 };
 
 
-function toggleMobileMore(force) {
-    const sheet = document.getElementById("mobileMoreSheet");
-    const backdrop = document.getElementById("mobileMoreBackdrop");
-    if (!sheet || !backdrop) return;
-
-    const shouldShow = typeof force === "boolean"
-        ? force
-        : !sheet.classList.contains("show");
-
-    sheet.classList.toggle("show", shouldShow);
-    backdrop.classList.toggle("show", shouldShow);
-}
-
-window.toggleMobileMore = toggleMobileMore;
-
 function showSection(sectionId) {
 
     document
@@ -3641,7 +3626,7 @@ function ensureWithdrawalModal() {
             <div class="modal-header">
                 <div>
                     <h2>Cash Withdrawal</h2>
-                    <p>Credit card cash withdrawal. A 2% charge applies.</p>
+                    <p>Withdraw cash from your credit card. A 2% charge applies.</p>
                 </div>
                 <button type="button" class="close-btn" onclick="closeModal('cashWithdrawalModal')">×</button>
             </div>
