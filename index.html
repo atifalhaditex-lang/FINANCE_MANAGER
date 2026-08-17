@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Finance Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">₨</div>
+
+            <div class="brand-text">
+                <h2>Finance</h2>
+                <span>Manager</span>
+            </div>
+        </div>
+
+
+        <nav>
+
+            <button class="nav-btn active" data-section="dashboard">
+                <span>▦</span>
+                <b>Dashboard</b>
+            </button>
+
+            <button class="nav-btn" data-section="transactions">
+                <span>⇄</span>
+                <b>Transactions</b>
+            </button>
+
+            <button class="nav-btn" data-section="reports">
+                <span>◔</span>
+                <b>Reports</b>
+            </button>
+
+            <button class="nav-btn" data-section="loans">
+                <span>🤝</span>
+                <b>Loans</b>
+            </button>
+
+            <button class="nav-btn" data-section="committee">
+                <span>👥</span>
+                <b>Committee</b>
+            </button>
+
+            <button class="nav-btn" data-section="credit">
+                <span>💳</span>
+                <b>Credit Card</b>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="mini-info">
+
+                <span>PERSONAL FINANCE</span>
+
+                <strong>Finance Manager</strong>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+
+        <!-- ================= TOPBAR ================= -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1 id="pageTitle">
+                    Dashboard
+                </h1>
+
+                <p id="pageSubtitle">
+                    Your complete financial overview
+                </p>
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <div class="date-box" id="currentDate"></div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             DASHBOARD
+        ====================================================== -->
+
+        <section id="dashboard" class="section active">
+
+
+            <!-- Welcome -->
+
+            <div class="welcome-card">
+
+                <div>
+
+                    <span class="small-label">
+                        FINANCIAL OVERVIEW
+                    </span>
+
+                    <h2>
+                        Take control of your money.
+                    </h2>
+
+                    <p>
+                        Track your income, expenses, savings,
+                        loans and credit in one place.
+                    </p>
+
+                </div>
+
+
+                <div class="welcome-icon">
+                    ₨
+                </div>
+
+            </div>
+
+
+
+            <!-- Main Stats -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card balance-card">
+
+                    <div class="stat-top">
+
+                        <span>
+                            Balance
+                        </span>
+
+                        <div class="stat-icon">
+                            ₨
+                        </div>
+
+                    </div>
+
+                    <h3 id="dashBalance">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Current balance
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card income-card">
+
+                    <div class="stat-top">
+
+                        <span>
+                            Total Income
+                        </span>
+
+                        <div class="stat-icon">
+                            ↗
+                        </div>
+
+                    </div>
+
+                    <h3 id="dashIncome">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Total money received
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card expense-card">
+
+                    <div class="stat-top">
+
+                        <span>
+                            Total Expense
+                        </span>
+
+                        <div class="stat-icon">
+                            ↘
+                        </div>
+
+                    </div>
+
+                    <h3 id="dashExpense">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Total money spent
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card saving-card">
+
+                    <div class="stat-top">
+
+                        <span>
+                            Net Savings
+                        </span>
+
+                        <div class="stat-icon">
+                            💰
+                        </div>
+
+                    </div>
+
+                    <h3 id="dashSavings">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Income minus expenses
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Dashboard Charts -->
+
+            <div class="dashboard-chart-grid">
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Income vs Expense
+                            </h3>
+
+                            <p>
+                                Financial performance
+                            </p>
+
+                        </div>
+
+
+                        <select
+                            id="dashboardPeriod"
+                            class="small-select"
+                        >
+
+                            <option value="all">
+                                All Time
+                            </option>
+
+                            <option value="6">
+                                Last 6 Months
+                            </option>
+
+                            <option value="12">
+                                Last 12 Months
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas
+                            id="incomeExpenseChart">
+                        </canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Expense Categories
+                            </h3>
+
+                            <p>
+                                Where your money goes
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container doughnut-container">
+
+                        <canvas
+                            id="expenseCategoryChart">
+                        </canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Dashboard Bottom -->
+
+            <div class="dashboard-grid">
+
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Recent Transactions
+                            </h3>
+
+                            <p>
+                                Latest financial activity
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="text-btn"
+                            onclick="showSection('transactions')"
+                        >
+                            View All
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="recentTransactions"
+                        class="table-wrap"
+                    ></div>
+
+                </div>
+
+
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Financial Summary
+                            </h3>
+
+                            <p>
+                                Quick overview
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-list">
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Loan Given
+                            </span>
+
+                            <strong id="summaryGiven">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Loan Received
+                            </span>
+
+                            <strong id="summaryReceived">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Committee Remaining
+                            </span>
+
+                            <strong id="summaryCommittee">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="summary-item">
+
+                            <span>
+                                Credit Used
+                            </span>
+
+                            <strong id="summaryCredit">
+                                ₨ 0
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             TRANSACTIONS
+        ====================================================== -->
+
+        <section
+            id="transactions"
+            class="section"
+        >
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="small-label">
+                        MONEY MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Transactions
+                    </h2>
+
+                    <p>
+                        Manage your income and expenses.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="openModal('transactionModal')"
+                >
+                    + Add Transaction
+                </button>
+
+            </div>
+
+
+
+            <div class="stats-grid compact">
+
+
+                <div class="stat-card income-card">
+
+                    <span>
+                        Total Income
+                    </span>
+
+                    <h3 id="transIncome">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card expense-card">
+
+                    <span>
+                        Total Expense
+                    </span>
+
+                    <h3 id="transExpense">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card balance-card">
+
+                    <span>
+                        Balance
+                    </span>
+
+                    <h3 id="transBalance">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="panel">
+
+
+                <div class="filter-bar">
+
+
+                    <select
+                        id="transactionFilter"
+                        onchange="renderTransactions()"
+                    >
+
+                        <option value="all">
+                            All Transactions
+                        </option>
+
+                        <option value="income">
+                            Income
+                        </option>
+
+                        <option value="expense">
+                            Expense
+                        </option>
+
+                    </select>
+
+
+
+                    <input
+                        type="text"
+                        id="transactionSearch"
+                        placeholder="Search transaction..."
+                        oninput="renderTransactions()"
+                    >
+
+
+                    <select
+                        id="transactionMonthFilter"
+                        onchange="renderTransactions()"
+                    >
+
+                        <option value="all">
+                            All Months
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+
+                <div
+                    id="transactionList"
+                    class="table-wrap"
+                ></div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             REPORTS
+        ====================================================== -->
+
+        <section
+            id="reports"
+            class="section"
+        >
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="small-label">
+                        ANALYTICS
+                    </span>
+
+                    <h2>
+                        Reports & Analytics
+                    </h2>
+
+                    <p>
+                        Understand where your money goes.
+                    </p>
+
+                </div>
+
+
+                <div class="report-controls">
+
+                    <select
+                        id="reportMonth"
+                        class="report-select"
+                    >
+
+                        <option value="all">
+                            All Time
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Report Stats -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card income-card">
+
+                    <span>
+                        Report Income
+                    </span>
+
+                    <h3 id="reportIncome">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Selected period
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card expense-card">
+
+                    <span>
+                        Report Expense
+                    </span>
+
+                    <h3 id="reportExpense">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Selected period
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card saving-card">
+
+                    <span>
+                        Net Savings
+                    </span>
+
+                    <h3 id="reportSavings">
+                        ₨ 0
+                    </h3>
+
+                    <p>
+                        Income minus expense
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card balance-card">
+
+                    <span>
+                        Savings Rate
+                    </span>
+
+                    <h3 id="reportRate">
+                        0%
+                    </h3>
+
+                    <p>
+                        Saving percentage
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Reports Charts -->
+
+            <div class="reports-grid">
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Monthly Income & Expense
+                            </h3>
+
+                            <p>
+                                Monthly financial trend
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container large-chart">
+
+                        <canvas
+                            id="monthlyChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Expense by Category
+                            </h3>
+
+                            <p>
+                                Category breakdown
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container doughnut-container">
+
+                        <canvas
+                            id="reportCategoryChart"
+                        ></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Category Table -->
+
+            <div class="panel">
+
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <h3>
+                            Category Analysis
+                        </h3>
+
+                        <p>
+                            Expense breakdown
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="categoryAnalysis"
+                    class="table-wrap"
+                ></div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             LOANS
+        ====================================================== -->
+
+        <section
+            id="loans"
+            class="section"
+        >
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="small-label">
+                        BORROWING & LENDING
+                    </span>
+
+                    <h2>
+                        Loans / Udhaar
+                    </h2>
+
+                    <p>
+                        Manage money given to or received from people.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="openModal('loanModal')"
+                >
+                    + Add Loan
+                </button>
+
+            </div>
+
+
+
+            <div class="stats-grid compact">
+
+
+                <div class="stat-card loan-card">
+
+                    <span>
+                        Loan Given
+                    </span>
+
+                    <h3 id="loanGiven">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card income-card">
+
+                    <span>
+                        Loan Received
+                    </span>
+
+                    <h3 id="loanReceived">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card expense-card">
+
+                    <span>
+                        Outstanding
+                    </span>
+
+                    <h3 id="loanOutstanding">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="panel">
+
+                <div class="panel-heading">
+
+                    <div>
+
+                        <h3>
+                            Loan Records
+                        </h3>
+
+                        <p>
+                            Track every Udhaar record.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="loanList"
+                    class="table-wrap"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             COMMITTEE
+        ====================================================== -->
+
+        <section
+            id="committee"
+            class="section"
+        >
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="small-label">
+                        SAVINGS MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Committee
+                    </h2>
+
+                    <p>
+                        Track your monthly committee payments.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="openModal('committeeModal')"
+                >
+                    + Add Committee
+                </button>
+
+            </div>
+
+
+
+            <div class="stats-grid compact">
+
+
+                <div class="stat-card balance-card">
+
+                    <span>
+                        Total Committee
+                    </span>
+
+                    <h3 id="committeeTotal">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card income-card">
+
+                    <span>
+                        Paid Amount
+                    </span>
+
+                    <h3 id="committeePaid">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+
+
+                <div class="stat-card expense-card">
+
+                    <span>
+                        Remaining
+                    </span>
+
+                    <h3 id="committeeRemaining">
+                        ₨ 0
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+
+            <div
+                id="committeeList"
+                class="committee-grid"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             CREDIT CARD
+        ====================================================== -->
+
+        <section
+            id="credit"
+            class="section"
+        >
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="small-label">
+                        CREDIT MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Credit Card
+                    </h2>
+
+                    <p>
+                        Manage credit limit and cash withdrawals.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="openModal('creditModal')"
+                >
+                    + Add Credit Card
+                </button>
+
+            </div>
+
+
+
+            <div
+                id="creditList"
+                class="credit-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================================
+     TRANSACTION MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="transactionModal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Add Transaction
+                </h2>
+
+                <p>
+                    Record income or expense.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('transactionModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form id="transactionForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Transaction Type
+                    </label>
+
+                    <select
+                        id="transactionType"
+                        required
+                    >
+
+                        <option value="income">
+                            Income
+                        </option>
+
+                        <option value="expense">
+                            Expense
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select
+                        id="transactionCategory"
+                        required
+                    ></select>
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="transactionTitle"
+                        placeholder="e.g. Monthly Salary"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="transactionAmount"
+                        placeholder="0"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="transactionDate"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('transactionModal')"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Add Transaction
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     LOAN MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="loanModal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Add Loan / Udhaar
+                </h2>
+
+                <p>
+                    Record lending or borrowing.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('loanModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form id="loanForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Loan Type
+                    </label>
+
+                    <select
+                        id="loanType"
+                        required
+                    >
+
+                        <option value="given">
+                            Given to Person
+                        </option>
+
+                        <option value="received">
+                            Received from Person
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Person Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loanPerson"
+                        placeholder="e.g. Ali"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Total Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="loanAmount"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="loanDate"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Note
+                    </label>
+
+                    <input
+                        type="text"
+                        id="loanNote"
+                        placeholder="Optional note"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('loanModal')"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Add Loan
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     COMMITTEE MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="committeeModal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Add Committee
+                </h2>
+
+                <p>
+                    Create a new monthly committee.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('committeeModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form id="committeeForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Committee Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="committeeName"
+                        placeholder="e.g. Office Committee"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Monthly Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="committeeAmount"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Total Months
+                    </label>
+
+                    <input
+                        type="number"
+                        id="committeeMonths"
+                        min="1"
+                        placeholder="12"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Start Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="committeeStart"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('committeeModal')"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Create Committee
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     CREDIT CARD MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="creditModal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Add Credit Card
+                </h2>
+
+                <p>
+                    Set your credit card details.
+                </p>
+
+            </div>
+
+
+            <button
+                class="close-btn"
+                onclick="closeModal('creditModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <form id="creditForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Card Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="creditName"
+                        placeholder="e.g. HBL Credit Card"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Credit Limit
+                    </label>
+
+                    <input
+                        type="number"
+                        id="creditLimit"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label>
+                        Currently Used
+                    </label>
+
+                    <input
+                        type="number"
+                        id="creditUsed"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeModal('creditModal')"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Add Card
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div id="toast"></div>
+
+
+<!-- APP JS -->
+
+<script src="app.js"></script>
+
+
+</body>
+</html>
