@@ -562,7 +562,8 @@ td strong{color:#f3f5f7}
     .chart-container{height:240px}.large-chart{height:290px}.doughnut-container{height:250px}
     .section-heading{align-items:flex-start;flex-direction:column;margin-bottom:14px}
     .section-heading h2{font-size:20px}
-    .loan-card,.committee-grid,.credit-grid,.reports-grid{grid-template-columns:1fr 1fr}
+    .loan-card,.committee-grid,.credit-grid{grid-template-columns:1fr 1fr}
+    .reports-grid{grid-template-columns:1fr}
     .loan-card .stat-card{min-height:105px}
     .filter-bar{display:grid;grid-template-columns:1fr 1fr}
     .filter-bar input{grid-column:1/-1;min-width:0}
