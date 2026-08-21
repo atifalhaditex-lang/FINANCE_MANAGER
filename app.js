@@ -103,7 +103,7 @@ function setCloudStatus(text, state = "idle") {
 }
 
 async function syncFinanceDataNow() {
-    if (!supabaseClient || !currentUser || isLoadingAccountData) return;
+    if (!supabaseClient || !currentUser?.id || isLoadingAccountData) return;
 
     try {
         setCloudStatus("Saving securely…", "saving");
@@ -163,21 +163,22 @@ async function loadAccountFinanceData(user) {
 
         if (error) throw error;
 
-        const userCache = loadLocalUserCache(user.id);
         const hasRemoteRow = Boolean(row);
 
-        // If this account has never created a cloud row but this device already
-        // has valid data, migrate that cache instead of overwriting it with [].
+        // STRICT ACCOUNT ISOLATION:
+        // Never copy browser-cached data into a different/new account.
+        // Existing accounts load only their own Supabase row.
+        // New accounts always start empty.
         data = hasRemoteRow
             ? normalizeFinanceData(row.data)
-            : (userCache || structuredClone(defaultData));
+            : structuredClone(defaultData);
 
         localStorage.setItem(userStorageKey(user.id), JSON.stringify(data));
 
         isLoadingAccountData = false;
         updateAll();
 
-        // Creates the first cloud row when needed, or refreshes an existing one.
+        // Create this user's own empty/private cloud row when needed.
         await syncFinanceDataNow();
         setCloudStatus("Securely synced", "saved");
     } catch (error) {
@@ -4864,6 +4865,10 @@ async function openAuthenticatedApp(user) {
         setAuthenticatedVisibility(false);
         return;
     }
+
+    // Clear previous account data before switching identity.
+    data = structuredClone(defaultData);
+    if (appUiInitialized) updateAll();
 
     currentUser = user;
 
