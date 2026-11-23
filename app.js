@@ -118,7 +118,7 @@ function setCloudStatus(text, state = "idle") {
 }
 
 async function syncFinanceDataNow() {
-    if (!supabaseClient || !currentUser?.id || isLoadingAccountData) return;
+    if (!supabaseClient || !currentUser?.id || isLoadingAccountData) return false;
 
     try {
         setCloudStatus("Saving securely…", "saving");
@@ -136,9 +136,11 @@ async function syncFinanceDataNow() {
         if (error) throw error;
 
         setCloudStatus("Securely synced", "saved");
+        return true;
     } catch (error) {
         console.error("Cloud save failed:", error);
         setCloudStatus("Offline — not synced", "error");
+        return false;
     }
 }
 
@@ -193,17 +195,20 @@ async function loadAccountFinanceData(user) {
         isLoadingAccountData = false;
         updateAll();
 
-        // Create this user's own empty/private cloud row when needed.
-        await syncFinanceDataNow();
-        setCloudStatus("Securely synced", "saved");
+        // Never permit editing until the cloud read and initial cloud write are confirmed.
+        clearTimeout(remoteSaveTimer);
+        remoteSaveTimer = null;
+        const cloudSaved = await syncFinanceDataNow();
+        if (!cloudSaved) {
+            throw new Error("Cloud sync could not be confirmed. Editing is locked to protect existing records.");
+        }
     } catch (error) {
         console.error("Could not load account finance data:", error);
-        const cached = loadLocalUserCache(user.id);
-        data = cached || structuredClone(defaultData);
+        clearTimeout(remoteSaveTimer);
+        remoteSaveTimer = null;
         isLoadingAccountData = false;
-        updateAll();
-        setCloudStatus("Offline — local cache only", "error");
-        showToast("Cloud data could not load. Using this device's saved copy.");
+        setCloudStatus("Cloud unavailable — editing locked", "error");
+        throw error;
     }
 }
 
@@ -299,7 +304,10 @@ function today() {
         String(d.getDate())
             .padStart(2, "0");
 
-    return `${year}-${month}-${day}`;
+    const currentDate = `${year}-${month}-${day}`;
+
+    // This workspace starts its new financial records on 1 January 2027.
+    return currentDate < "2027-01-01" ? "2027-01-01" : currentDate;
 
 }
 
@@ -5306,69 +5314,8 @@ async function handleLogin(event) {
 
 async function handleRegister(event) {
     event.preventDefault();
-    if (!supabaseClient) {
-        setAuthMessage("Secure registration service could not load.", "error");
-        return;
-    }
-
-    const fullName = $("registerName")?.value.trim() || "";
-    const email = $("registerEmail")?.value.trim() || "";
-    const password = $("registerPassword")?.value || "";
-    const confirmPassword = $("registerPasswordConfirm")?.value || "";
-
-    const registerPasswordInput=$("registerPassword");
-    if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-        setFieldError(registerPasswordInput,"Use 8+ characters with uppercase, lowercase and a number.");
-        setAuthMessage("Please strengthen the password before creating the account.","error");
-        registerPasswordInput?.focus();
-        return;
-    }
-    clearFieldError(registerPasswordInput);
-    if (password !== confirmPassword) {
-        setFieldError($("registerPasswordConfirm"),"Passwords do not match.");
-        setAuthMessage("The two passwords do not match.","error");
-        $("registerPasswordConfirm")?.focus();
-        return;
-    }
-    clearFieldError($("registerPasswordConfirm"));
-    setAuthBusy("registerSubmit", true, "Creating private account…");
-    setAuthMessage("");
-
-    try {
-        const { data: result, error } =
-            await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName
-                    },
-                    emailRedirectTo: PRODUCTION_APP_URL
-                }
-            });
-
-        if (error) throw error;
-
-        if (result.session && result.user) {
-            await openAuthenticatedApp(result.user);
-        } else {
-            switchAuthMode("login");
-            if ($("loginEmail")) $("loginEmail").value = email;
-            setAuthMessage(
-                "Account created. Please confirm the email, then sign in.",
-                "success"
-            );
-        }
-
-        $("registerForm")?.reset();
-    } catch (error) {
-        console.error("Registration error:", error);
-        setAuthMessage(friendlyAuthError(error), "error");
-    } finally {
-        setAuthBusy("registerSubmit", false, "");
-    }
+    setAuthMessage("Account creation is disabled. Sign in with your existing private account.", "error");
 }
-
 async function sendPasswordReset() {
     if (!supabaseClient) return;
 
