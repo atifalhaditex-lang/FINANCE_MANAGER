@@ -46,10 +46,6 @@
                 <p id="authSubheading">Sign in securely to open my private financial workspace.</p>
             </div>
 
-            <div class="auth-tabs" role="tablist" aria-label="Account access">
-                <button class="auth-tab active" id="loginTab" type="button" role="tab" aria-selected="true" aria-controls="loginForm" data-auth-mode="login">Sign in</button>
-                <button class="auth-tab" id="registerTab" type="button" role="tab" aria-selected="false" aria-controls="registerForm" data-auth-mode="register">Create account</button>
-            </div>
 
             <form class="auth-form" id="loginForm">
                 <label>
@@ -71,37 +67,6 @@
 
                 <button class="auth-submit" id="loginSubmit" type="submit">
                     <span>Open my workspace</span>
-                    <b>→</b>
-                </button>
-            </form>
-
-            <form class="auth-form hidden" id="registerForm">
-                <label>
-                    <span>Full name</span>
-                    <input id="registerName" type="text" autocomplete="name" required maxlength="80" placeholder="My name">
-                </label>
-                <label>
-                    <span>Email address</span>
-                    <input id="registerEmail" type="email" autocomplete="email" required placeholder="name@example.com">
-                </label>
-                <label>
-                    <span>Create password</span>
-                    <div class="password-field">
-                        <input id="registerPassword" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters">
-                        <button type="button" class="password-toggle" data-toggle-password="registerPassword" aria-label="Show password">Show</button>
-                    </div>
-                    <div class="password-strength" id="registerPasswordStrength" aria-live="polite">
-                        <div class="strength-track" aria-hidden="true"><span></span></div>
-                        <small>Use 8+ characters with upper/lowercase and a number.</small>
-                    </div>
-                </label>
-                <label>
-                    <span>Confirm password</span>
-                    <input id="registerPasswordConfirm" type="password" autocomplete="new-password" required minlength="8" placeholder="Repeat password">
-                </label>
-
-                <button class="auth-submit" id="registerSubmit" type="submit">
-                    <span>Create my private account</span>
                     <b>→</b>
                 </button>
             </form>
