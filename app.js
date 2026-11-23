@@ -4959,11 +4959,6 @@ function updateCurrentDate() {
 ========================================================= */
 
 
-function safeRenderCharts() {
-    if (typeof Chart === "undefined") return;
-    safeRenderCharts();
-}
-
 function updateAll() {
 
     saveData();
